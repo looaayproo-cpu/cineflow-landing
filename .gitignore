@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Next.js & Production Build
+.next/
+/out/
+/build/
+/dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables & local secrets
+.env
+.env*.local
+.env.*
+!.env.example
+
+# AI Agents, Skills & Tooling Metadata
+.agents/
+.specify/
+.claude/
+.codex/
+.impeccable/
+.gemini/
+
+# Python / Virtual Environments
+.venv/
+venv/
+ENV/
+__pycache__/
+*.pyc
+
+# Debug & Execution Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Diagnostic & Coverage Tools
+coverage/
+*.lcov
+.nyc_output
+
+# OS & Editor Metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local Vercel CLI
+.vercel/
