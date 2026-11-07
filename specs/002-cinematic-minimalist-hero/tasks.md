@@ -2,10 +2,10 @@
 
 **Feature**: [specs/002-cinematic-minimalist-hero/spec.md](file:///d:/LoayProject/specs/002-cinematic-minimalist-hero/spec.md)  
 **Plan**: [specs/002-cinematic-minimalist-hero/plan.md](file:///d:/LoayProject/specs/002-cinematic-minimalist-hero/plan.md)  
-**Status**: Phases 1–5 Completed / All Quality Assurance & Production Polish Passed  
+**Status**: Phases 1–8 Completed / All Quality Assurance & Production Polish Passed  
 
 > [!IMPORTANT]
-> **STRICT EXECUTION BOUNDARY**: All phases (1, 2, 3, 4, 4.1, and 5) are complete. Full production readiness, Impeccable design audit, performance optimization, and accessibility verification achieved. Stopping here for final human review.
+> **STRICT EXECUTION BOUNDARY**: All phases (1 through 8) are complete. Full production readiness, Impeccable design audit, performance optimization, and accessibility verification achieved. Stopping here for final human review.
 
 ---
 
@@ -128,4 +128,91 @@
   - *Validation*: Dead code (`tool-badges.tsx`) removed; 0 detector anti-patterns; Next.js 14 production build succeeds with code 0 (4/4 static routes generated); zero TypeScript errors (`tsc --noEmit`).
 
 **Phase 5 Checkpoint**: Production polish and final QA complete. Ready for human acceptance.
+
+---
+
+## Phase 6: Mobile Hero Refinement, Arabic-First Experience & Typography System (COMPLETED)
+
+**Goal**: Achieve mobile-first readability, an authentic Arabic-first presentation, Google Antigravity-inspired particle subtlety on mobile, and a typography system using IBM Plex Sans Arabic and Noto Sans Arabic.
+
+- [x] **T027** [P] Mobile Particle Mode in `src/components/hero-particle-canvas.tsx`: Configured dedicated mobile mode (65 particles, ~14% of desktop baseline; radius scaled by 0.46; base opacity scaled by 0.28; shadowBlur set to 0; velocity scaled by 0.65).
+  - *Validation*: Desktop 480-particle immersive vortex preserved intact; mobile particle background is calm, meditative, and unobtrusive.
+- [x] **T028** [P] Text-Safe Zone: Implemented distance-based spatial opacity falloff in canvas engine ($d_{\text{text}}$ attenuation down to 8% in core text area) and soft radial dark scrim in `src/components/hero-section.tsx`.
+  - *Validation*: Particles floating behind headline, description, and CTAs become faint ambient specks; text remains visually dominant with zero collision.
+- [x] **T029** [P] Arabic-First & Dark Mode Default: Set `ar` / `rtl` and Dark Obsidian (`#09090B`) as default for first-time visitors in `src/app/layout.tsx` and `src/context/language-context.tsx` with preference persistence and zero hydration flashes.
+  - *Validation*: First-time loads open in Arabic Dark Mode instantly; toggle to English / Light mode remains fully functional.
+- [x] **T030** [P] Arabic Typography System: Integrated `IBM_Plex_Sans_Arabic` (weights 600, 700 for headings) and `Noto_Sans_Arabic` (weights 400, 500, 600 for body copy) via `next/font/google` in `layout.tsx`, `tailwind.config.js`, and `globals.css`.
+  - *Validation*: Headings render in IBM Plex Sans Arabic; body copy renders in Noto Sans Arabic; English retains Plus Jakarta Sans; Arabic line-heights calibrated to `leading-[1.28]` (headings) and `leading-[1.75]` (body).
+- [x] **T031** [P] Complete Italic Removal: Purged all `italic` Tailwind classes and styles across the entire application, replacing with `font-bold` and accent color hierarchy.
+  - *Validation*: Headline highlight and bento copy are clean and upright with zero skew or italic artifacts.
+- [x] **T032** [P] Mobile Hero Layout & Touch Polish: Polished mobile viewport layout ($360\text{px} - 430\text{px}$), navbar hamburger button ($40\times 40\text{px}$ touch target), primary & secondary CTAs flex stacking ($48\text{px}$ min height), and bottom scroll indicator clearance.
+  - *Validation*: Zero horizontal overflow (`overflow-x-hidden`); comfortable tap targets; seamless anchor navigation to `#curriculum`.
+
+**Phase 6 Checkpoint**: Mobile Hero refinement and Arabic typography verified and operational.
+
+---
+
+## Phase 7: Mobile Hero Final Visual Refinement (Impeccable-Assisted) (COMPLETED)
+
+**Goal**: Achieve the ideal harmony between pristine Arabic typography readability, Google Antigravity-inspired subtle ambient particle presence, and balanced mobile vertical spacing without altering approved desktop behavior.
+
+- [x] **T033** [P] Particle Engine Calibration in `src/components/hero-particle-canvas.tsx`:
+  - Increased mobile particle count from 65 to 75.
+  - Calibrated particle radius (`mobileRadiusScale = 0.72`, `apparentRadius = Math.max(0.75, ...)`), ensuring visible $0.8\text{px} - 2.4\text{px}$ crisp specks on high-DPI screens.
+  - Calibrated mobile alpha scaling (`mobileAlphaScale = 0.65`, `minTextZoneAlpha = 0.18`), ensuring particles are gracefully visible in margins and periphery while smoothly dimming to $\sim 12\%$ behind text.
+  - Added subtle atmospheric glow (`shadowBlur = 3`) for the top 30% foreground particles.
+- [x] **T034** [P] Mobile Scrim & Vertical Spacing in `src/components/hero-section.tsx`:
+  - Scoped the opaque directional vignette (`from-background/95`) strictly to desktop (`hidden lg:block lg:w-3/5`).
+  - Replaced the previous opaque dark mobile gradient with a soft atmospheric scrim (`radial-gradient(ellipse 75% 45% at 50% 40%, color-mix(in srgb, var(--background) 50%, transparent) 0%, transparent 100%)`).
+  - Reduced the void between the floating navbar and hero eyebrow by ~15% (`pt-20 sm:pt-24 lg:pt-28`).
+  - Refined margins and vertical rhythm: eyebrow `mb-2.5 sm:mb-5`, description `mt-3 sm:mt-5 mb-6 sm:mb-8`, and bottom padding `pb-12 sm:pb-16`.
+- [x] **T035** [P] Mobile Viewport Balance & Touch Ergonomics:
+  - Ensured dual CTA buttons and bottom curriculum indicator fit comfortably above the fold on standard mobile screens ($360\times 800$, $375\times 812$, $390\times 844$) without collision or clipping.
+  - Verified zero horizontal scroll overflow (`scrollWidth === width === 390px`).
+- [x] **T036** [P] Desktop Integrity Preservation:
+  - Verified desktop behavior is 100% preserved: 480 particles, logarithmic swirling physics, right-aligned Arabic text block, and center-left vortex.
+- [x] **T037** [P] Comprehensive QA & Build Verification:
+  - Captured pixel-accurate mobile screenshot at 390×844 and desktop screenshot at 1440×900 via Chrome CDP.
+  - Verified `npx tsc --noEmit` exits with 0 errors.
+  - Verified `npm run build` succeeds with code 0 (4/4 static pages generated).
+  - Verified Impeccable detect rules report 0 anti-patterns for the hero components.
+
+**Phase 7 Checkpoint**: Final mobile visual refinement verified and operational. All requirements satisfied.
+
+---
+
+## Phase 8: Mobile Cinematic Aurora & Particle Flow Upgrade (COMPLETED)
+
+**Goal**: Deliver a unified cinematic mobile background combining ambient Aurora lighting, flowing light ribbons, and a refined 3-tier particle field without compromising Arabic readability or approved desktop behavior.
+
+- [x] **T038** [P] Impeccable Design Audit: Conducted systematic audit across 10 mobile dimensions (hierarchy, depth, lighting, particles, contrast, typography, RTL, CTAs, responsive balance, design system).
+- [x] **T039** [P] Mobile Aurora Lighting System in `src/app/globals.css` & `src/components/hero-section.tsx`:
+  - Added hardware-accelerated CSS keyframe animations (`aurora-drift-1`, `aurora-drift-2`, `aurora-drift-3`) with `translate3d`, `scale`, and opacity transitions over 20–26s cycles.
+  - Implemented 3 mobile Aurora mesh layers (Violet `#7C3AED`, Electric Blue `#2563EB`, Cyan `#06B6D4`) with large radial gradient blurs (`blur-[75px] - blur-[85px]`) and a deep navy oceanic underwash (`rgba(11, 16, 32, 0.75)`).
+  - Preserved desktop glow accents completely untouched (`hidden lg:block`).
+- [x] **T040** [P] Flowing Light Ribbons in `src/components/hero-particle-canvas.tsx`:
+  - Implemented `drawMobileLightRibbons` in Canvas 2D engine drawing 2 continuous, organic cubic Bézier energy streams.
+  - Gradient strokes transitioning through translucent violet, electric blue, aqua cyan, and soft purple.
+  - Dynamic time-based wave modulation (`timeWave * 0.75`) synchronized with the particle flow; static fallback under `prefers-reduced-motion`.
+- [x] **T041** [P] 3-Tier Mobile Particle Field in `src/components/hero-particle-canvas.tsx`:
+  - Layer A (Background Dust): 35 microscopic particles ($0.8\text{px} - 1.2\text{px}$), faint opacity ($0.15 - 0.28$), zero glow.
+  - Layer B (Visible Ambient): 28 medium particles ($1.3\text{px} - 2.0\text{px}$), moderate opacity ($0.35 - 0.60$), subtle glow on foreground.
+  - Layer C (Luminous Accent): 12 bright particles ($2.2\text{px} - 3.2\text{px}$), distinct glow (`shadowBlur: 7`), riding near ribbon paths.
+- [x] **T042** [P] Text Readability & Dynamic Safe Zone:
+  - Preserved mathematical text-safe zone attenuation ($d_{\text{text}}$ falloff) keeping text dominant (>15:1 contrast).
+  - Mobile radial atmospheric scrim (`color-mix(in srgb, var(--background) 55%, transparent)`) cushions headline without muddying peripheral lighting.
+- [x] **T043** [P] Viewport & Bidirectional Testing:
+  - Verified across 360px, 375px, 390px, and 430px viewports with 0 horizontal overflow.
+  - Verified Arabic RTL and English LTR alignment parity.
+  - Verified Studio Daylight / Light Mode theme adaptations.
+- [x] **T044** [P] Desktop Baseline Preservation:
+  - Desktop 1440px verified 100% untouched: 480 particles, logarithmic swirling physics, continuous mouse orbital interaction, right-aligned Arabic block.
+- [x] **T045** [P] Comprehensive QA & Build Verification:
+  - Captured pixel-accurate screenshots for all 6 required configurations via Chrome CDP.
+  - `npx tsc --noEmit` exited with 0 errors.
+  - `npm run build` exited with code 0 (4/4 static pages generated).
+
+**Phase 8 Checkpoint**: Mobile Cinematic Aurora & Particle Flow upgrade verified and operational. All acceptance criteria met.
+
+
 

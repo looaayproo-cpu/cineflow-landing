@@ -111,7 +111,7 @@ export function ClientBlueprintCard() {
               )}
             </button>
           </div>
-          <p className="text-xs text-slate-600 dark:text-zinc-400 italic line-clamp-2 leading-relaxed">
+          <p className="text-xs text-slate-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
             {language === 'ar'
               ? '«مرحبًا [الاسم]، لاحظت أن الفيديوهات الأخيرة ممتازة في المضمون، لكن الهوك الأول يفقد 40% من المشاهدين. جهزت لك عينة 15 ثانية معدلة بأسلوب سينمائي مجانًا...»'
               : '"Hey [Creator], loved your latest breakdown. Noticed the first 3 seconds drop ~40% retention. I rebuilt a kinetic 15-second visual hook for you free of charge..."'}

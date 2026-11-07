@@ -28,6 +28,7 @@ interface VortexParticle {
   lightColor: string;
   lightGlow: string;
   baseAlpha: number;
+  tier: 'dust' | 'ambient' | 'accent' | 'desktop';
   
   // Continuous Mouse Orbital Field (Phase 3 & 4.1 Refinement)
   orbitBlend: number;
@@ -90,12 +91,104 @@ const PALETTES = [
   },
 ];
 
-// Adaptive particle count based on viewport
+// Adaptive particle count based on viewport (Mobile: 75, Tablet: 180, Desktop: 480)
 const getTargetParticleCount = (width: number): number => {
-  if (width < 768) return 140; // Mobile
-  if (width < 1024) return 260; // Tablet
+  if (width < 768) return 75; // Mobile: ~16% of desktop baseline for subtle, elegant cinematic ambiance
+  if (width < 1024) return 180; // Tablet
   return 480; // Desktop immersive field
 };
+
+// Flowing Light Ribbons (Mobile only, Phase 3: Organic cinematic energy streams)
+function drawMobileLightRibbons(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  timeWave: number,
+  isDark: boolean,
+  prefersReduced: boolean
+) {
+  const t = prefersReduced ? 0 : timeWave * 0.75;
+
+  ctx.save();
+
+  // Ribbon 1: Upper Flowing Aurora Stream (Violet -> Electric Blue -> Cyan)
+  const r1_startX = -width * 0.15;
+  const r1_startY = height * 0.10 + Math.sin(t * 1.1) * 16;
+  const r1_cp1X = width * 0.35 + Math.cos(t * 0.9) * 25;
+  const r1_cp1Y = height * 0.18 + Math.sin(t * 1.3) * 22;
+  const r1_cp2X = width * 0.82 + Math.sin(t * 0.8) * 28;
+  const r1_cp2Y = height * 0.32 + Math.cos(t * 1.0) * 24;
+  const r1_endX = width * 1.15;
+  const r1_endY = height * 0.46 + Math.sin(t * 0.7) * 18;
+
+  ctx.beginPath();
+  ctx.moveTo(r1_startX, r1_startY);
+  ctx.bezierCurveTo(r1_cp1X, r1_cp1Y, r1_cp2X, r1_cp2Y, r1_endX, r1_endY);
+
+  const grad1 = ctx.createLinearGradient(r1_startX, r1_startY, r1_endX, r1_endY);
+  if (isDark) {
+    grad1.addColorStop(0, 'rgba(124, 58, 237, 0)');
+    grad1.addColorStop(0.20, 'rgba(124, 58, 237, 0.42)');
+    grad1.addColorStop(0.50, 'rgba(56, 189, 248, 0.46)');
+    grad1.addColorStop(0.78, 'rgba(34, 211, 238, 0.38)');
+    grad1.addColorStop(1, 'rgba(6, 182, 212, 0)');
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = 'rgba(99, 102, 241, 0.55)';
+  } else {
+    grad1.addColorStop(0, 'rgba(124, 58, 237, 0)');
+    grad1.addColorStop(0.25, 'rgba(99, 102, 241, 0.25)');
+    grad1.addColorStop(0.65, 'rgba(14, 165, 233, 0.28)');
+    grad1.addColorStop(1, 'rgba(6, 182, 212, 0)');
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = 'rgba(79, 70, 229, 0.28)';
+  }
+
+  ctx.strokeStyle = grad1;
+  ctx.lineWidth = 3.6;
+  ctx.lineCap = 'round';
+  ctx.globalAlpha = isDark ? 0.75 : 0.50;
+  ctx.stroke();
+
+  // Ribbon 2: Lower Flowing Energy Stream (Cyan -> Electric Blue -> Violet)
+  const r2_startX = width * 1.15;
+  const r2_startY = height * 0.62 + Math.cos(t * 1.0) * 16;
+  const r2_cp1X = width * 0.70 + Math.sin(t * 1.2) * 24;
+  const r2_cp1Y = height * 0.72 + Math.cos(t * 0.8) * 20;
+  const r2_cp2X = width * 0.28 + Math.cos(t * 1.1) * 26;
+  const r2_cp2Y = height * 0.80 + Math.sin(t * 1.0) * 22;
+  const r2_endX = -width * 0.15;
+  const r2_endY = height * 0.86 + Math.cos(t * 0.9) * 16;
+
+  ctx.beginPath();
+  ctx.moveTo(r2_startX, r2_startY);
+  ctx.bezierCurveTo(r2_cp1X, r2_cp1Y, r2_cp2X, r2_cp2Y, r2_endX, r2_endY);
+
+  const grad2 = ctx.createLinearGradient(r2_startX, r2_startY, r2_endX, r2_endY);
+  if (isDark) {
+    grad2.addColorStop(0, 'rgba(6, 182, 212, 0)');
+    grad2.addColorStop(0.25, 'rgba(34, 211, 238, 0.40)');
+    grad2.addColorStop(0.60, 'rgba(37, 99, 235, 0.44)');
+    grad2.addColorStop(0.82, 'rgba(168, 85, 247, 0.30)');
+    grad2.addColorStop(1, 'rgba(124, 58, 237, 0)');
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = 'rgba(14, 165, 233, 0.50)';
+  } else {
+    grad2.addColorStop(0, 'rgba(6, 182, 212, 0)');
+    grad2.addColorStop(0.30, 'rgba(14, 165, 233, 0.24)');
+    grad2.addColorStop(0.70, 'rgba(99, 102, 241, 0.24)');
+    grad2.addColorStop(1, 'rgba(124, 58, 237, 0)');
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(14, 165, 233, 0.28)';
+  }
+
+  ctx.strokeStyle = grad2;
+  ctx.lineWidth = 2.8;
+  ctx.lineCap = 'round';
+  ctx.globalAlpha = isDark ? 0.70 : 0.45;
+  ctx.stroke();
+
+  ctx.restore();
+}
 
 export function HeroParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -235,6 +328,34 @@ export function HeroParticleCanvas() {
     const createVortexParticle = (width: number, height: number, index: number, total: number): VortexParticle => {
       const palette = PALETTES[index % PALETTES.length];
       const { cx, cy } = getVortexCenter(width, height);
+      const isMobile = width < 768;
+
+      let tier: 'dust' | 'ambient' | 'accent' | 'desktop' = 'desktop';
+      let baseSize = 1.2 + Math.random() * 1.8;
+      let baseAlpha = 0.35 + Math.random() * 0.55;
+      let zVelocity = 0.0018 + Math.random() * 0.0035;
+
+      if (isMobile) {
+        if (index < 35) {
+          // Layer A: Microscopic background dust (35 particles)
+          tier = 'dust';
+          baseSize = 0.8 + Math.random() * 0.4;
+          baseAlpha = 0.22 + Math.random() * 0.18;
+          zVelocity = 0.0010 + Math.random() * 0.0018;
+        } else if (index < 63) {
+          // Layer B: Visible ambient particles (28 particles)
+          tier = 'ambient';
+          baseSize = 1.3 + Math.random() * 0.7;
+          baseAlpha = 0.40 + Math.random() * 0.28;
+          zVelocity = 0.0016 + Math.random() * 0.0028;
+        } else {
+          // Layer C: Luminous accent particles (12 particles)
+          tier = 'accent';
+          baseSize = 2.2 + Math.random() * 1.0;
+          baseAlpha = 0.72 + Math.random() * 0.25;
+          zVelocity = 0.0020 + Math.random() * 0.0035;
+        }
+      }
 
       // Distribute radii along logarithmic vortex arms
       const maxRadius = Math.max(width, height) * 0.68;
@@ -266,19 +387,20 @@ export function HeroParticleCanvas() {
         radialFreq: 2 + Math.floor(Math.random() * 3),
         radialPhase: Math.random() * Math.PI * 2,
         z,
-        zVelocity: 0.0018 + Math.random() * 0.0035,
+        zVelocity,
 
         x,
         y,
         vx: 0,
         vy: 0,
 
-        baseSize: 1.2 + Math.random() * 1.8,
+        baseSize,
         darkColor: palette.darkColor,
         darkGlow: palette.darkGlow,
         lightColor: palette.lightColor,
         lightGlow: palette.lightGlow,
-        baseAlpha: 0.35 + Math.random() * 0.55,
+        baseAlpha,
+        tier,
 
         orbitBlend: 0,
         localOrbitAngle: Math.random() * Math.PI * 2,
@@ -368,12 +490,21 @@ export function HeroParticleCanvas() {
           themeRef.current === 'dark' ||
           document.documentElement.classList.contains('dark');
 
+        const isMobile = width < 768;
         const prefersReduced = prefersReducedMotionRef.current;
-        // Centralized calm velocity scaling
-        const speedMultiplier = (prefersReduced ? 0.2 : 1.0) * SPEED_SCALE;
+        // Centralized calm velocity scaling (even calmer and more subtle on mobile)
+        const speedMultiplier = (prefersReduced ? 0.2 : (isMobile ? 0.65 : 1.0)) * SPEED_SCALE;
 
         // Current vortex center
         const { cx, cy } = getVortexCenter(width, height);
+
+        // Text-Safe Zone: Calculate spatial falloff so particles never compete with critical copy
+        const isRTL = directionRef.current === 'rtl';
+        const textZoneCenterX = isMobile ? width * 0.5 : (isRTL ? width * 0.78 : width * 0.22);
+        const textZoneCenterY = isMobile ? height * 0.42 : height * 0.50;
+        const textZoneRx = isMobile ? width * 0.48 : width * 0.28;
+        const textZoneRy = isMobile ? height * 0.32 : height * 0.36;
+        const minTextZoneAlpha = isMobile ? 0.18 : 0.45;
 
         // Pointer state: active whenever cursor is inside the Hero (NO idle decay!)
         const pointer = pointerRef.current;
@@ -393,6 +524,18 @@ export function HeroParticleCanvas() {
 
         // Slower, meditative breathing wave time factor
         const timeWave = timestamp * 0.0005;
+
+        // Draw Flowing Light Ribbons (Mobile only, Phase 3: Organic cinematic energy streams)
+        if (isMobile) {
+          drawMobileLightRibbons(
+            ctx,
+            width,
+            height,
+            timeWave,
+            isDark,
+            prefersReduced
+          );
+        }
 
         const particles = particlesRef.current;
         const len = particles.length;
@@ -460,29 +603,71 @@ export function HeroParticleCanvas() {
             p.y += (vortexTargetY - p.y) * 0.040 * speedMultiplier;
           }
 
-          // 7. 3D Depth Projection: Scale, Opacity, and Glow
-          const depthScale = 1.0 + (p.z * 0.45);
-          const apparentRadius = Math.max(0.7, p.baseSize * depthScale);
-
-          // Alpha modulation with depth
-          const depthAlpha = p.baseAlpha * (0.55 + 0.45 * ((p.z + 1) * 0.5));
-          const alpha = isDark
-            ? Math.max(0.15, Math.min(0.95, depthAlpha))
-            : Math.max(0.12, Math.min(0.65, depthAlpha * 0.7));
-
-          // Draw particle
-          ctx.globalAlpha = alpha;
-          if (p.z > 0.2) {
-            ctx.shadowBlur = isDark ? 8 : 4;
-            ctx.shadowColor = isDark ? p.darkGlow : p.lightGlow;
-          } else {
-            ctx.shadowBlur = 0;
+          // 7. Text-Safe Zone Spatial Attenuation
+          const normDx = (p.x - textZoneCenterX) / textZoneRx;
+          const normDy = (p.y - textZoneCenterY) / textZoneRy;
+          const distText = Math.sqrt(normDx * normDx + normDy * normDy);
+          let textSafeFactor = 1.0;
+          if (distText < 1.3) {
+            const t = Math.max(0, Math.min(1, (distText - 0.35) / (1.3 - 0.35)));
+            const smooth = t * t * (3 - 2 * t);
+            textSafeFactor = minTextZoneAlpha + (1 - minTextZoneAlpha) * smooth;
           }
 
-          ctx.fillStyle = isDark ? p.darkColor : p.lightColor;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, apparentRadius, 0, Math.PI * 2);
-          ctx.fill();
+          // 8. 3D Depth Projection: Scale, Opacity, and Glow (Responsive & Calm)
+          const depthScale = 1.0 + (p.z * 0.45);
+
+          if (isMobile) {
+            // Mobile Multi-Tier Rendering (Phase 4: Dust, Ambient, Accent)
+            const apparentRadius = Math.max(0.65, p.baseSize * depthScale * 0.82);
+            const depthAlpha = p.baseAlpha * (0.60 + 0.40 * ((p.z + 1) * 0.5));
+
+            if (p.tier === 'dust') {
+              // Layer A: Microscopic background dust (crisp, zero glow, faint ambient speck)
+              ctx.shadowBlur = 0;
+              ctx.globalAlpha = Math.max(0.04, depthAlpha * 0.65 * textSafeFactor);
+            } else if (p.tier === 'ambient') {
+              // Layer B: Visible ambient particles (moderate opacity, subtle foreground glow)
+              if (p.z > 0.35) {
+                ctx.shadowBlur = isDark ? 3 : 2;
+                ctx.shadowColor = isDark ? p.darkGlow : p.lightGlow;
+              } else {
+                ctx.shadowBlur = 0;
+              }
+              ctx.globalAlpha = Math.max(0.08, depthAlpha * 0.82 * textSafeFactor);
+            } else {
+              // Layer C: Luminous accent particles (distinct celestial glow, high presence)
+              ctx.shadowBlur = isDark ? 7 : 4;
+              ctx.shadowColor = isDark ? p.darkGlow : p.lightGlow;
+              ctx.globalAlpha = Math.max(0.16, depthAlpha * 0.98 * textSafeFactor);
+            }
+
+            ctx.fillStyle = isDark ? p.darkColor : p.lightColor;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, apparentRadius, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Desktop Baseline Rendering (100% Unchanged)
+            const apparentRadius = Math.max(0.6, p.baseSize * depthScale);
+            const depthAlpha = p.baseAlpha * (0.55 + 0.45 * ((p.z + 1) * 0.5));
+            const baseAlpha = isDark
+              ? Math.max(0.15, Math.min(0.95, depthAlpha))
+              : Math.max(0.12, Math.min(0.65, depthAlpha * 0.7));
+            const alpha = Math.max(0.04, baseAlpha * textSafeFactor);
+
+            ctx.globalAlpha = alpha;
+            if (p.z > 0.2) {
+              ctx.shadowBlur = isDark ? 8 : 4;
+              ctx.shadowColor = isDark ? p.darkGlow : p.lightGlow;
+            } else {
+              ctx.shadowBlur = 0;
+            }
+
+            ctx.fillStyle = isDark ? p.darkColor : p.lightColor;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, apparentRadius, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
 

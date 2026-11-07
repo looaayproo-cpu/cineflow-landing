@@ -137,7 +137,7 @@ export function Navbar({ onOpenCheckout }: NavbarProps) {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             type="button"
-            className="lg:hidden p-1.5 sm:p-2 rounded-full text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+            className="lg:hidden p-2 rounded-full text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center min-w-[40px] min-h-[40px]"
             aria-label="Toggle mobile menu"
             aria-expanded={mobileMenuOpen}
           >

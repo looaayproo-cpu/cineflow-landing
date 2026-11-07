@@ -2,7 +2,7 @@
 
 **Branch**: `002-cinematic-minimalist-hero` | **Date**: 2026-11-04 (Refined Architecture - Phases 1 to 5 Complete)  
 **Spec**: [specs/002-cinematic-minimalist-hero/spec.md](file:///d:/LoayProject/specs/002-cinematic-minimalist-hero/spec.md)
-**Status**: All Phases (1 through 5) Implemented, Audited & Verified
+**Status**: All Phases (1 through 8) Implemented, Audited & Verified
 
 ---
 
@@ -107,3 +107,52 @@ In each animation frame:
    ```
    - In LTR: `start-0` is Left, gradient fades to the right (`bg-gradient-to-r`).
    - In RTL: `start-0` is Right, gradient fades to the left (`bg-gradient-to-l`).
+
+---
+
+## 5. Mobile Hero Final Visual Refinement & Arabic Typography System
+
+1. **Arabic-First Default & Typography System**:
+   - `IBM Plex Sans Arabic` (weights 600, 700) for editorial headings.
+   - `Noto Sans Arabic` (weights 400, 500, 600) for comfortable body copy.
+   - All italic styles completely eliminated across Arabic text.
+   - First-time visitors default to Arabic (`ar`/`rtl`) and Dark Obsidian theme (`#09090B`).
+
+2. **Mobile Ambient Particle Experience (Google Antigravity Parity)**:
+   - Target count: 75 particles on mobile (<768px).
+   - Particle sizing: `mobileRadiusScale = 0.72` with `apparentRadius = Math.max(0.75, ...)` generating crisp 0.8px–2.4px specks.
+   - Particle opacity: `mobileAlphaScale = 0.65` with dynamic text-safe zone attenuation ($d_{\text{text}}$ falloff down to $\sim 12\%$ behind text).
+   - Foreground glow: Restrained glow (`shadowBlur = 3`) for the top 30% foreground particles (`p.z > 0.4`).
+
+3. **Vertical Spacing & Mobile Scrim Balance**:
+   - Opaque directional vignette scoped strictly to desktop (`hidden lg:block lg:w-3/5`).
+   - Mobile subtle atmospheric scrim: `radial-gradient(ellipse 75% 45% at 50% 40%, color-mix(in srgb, var(--background) 50%, transparent) 0%, transparent 100%)`.
+   - Reduced top void between floating navbar and eyebrow by ~15% (`pt-20 sm:pt-24 lg:pt-28`).
+   - Refined vertical rhythm: Eyebrow `mb-2.5 sm:mb-5`, description `mt-3 sm:mt-5 mb-6 sm:mb-8`, bottom padding `pb-12 sm:pb-16`.
+   - Bottom curriculum indicator sits comfortably above the fold with zero overlap.
+   - Verified 0 horizontal overflow across all mobile widths ($360\text{px} - 430\text{px}$).
+
+---
+
+## 6. Mobile Cinematic Aurora & Particle Flow Architecture
+
+1. **Ambient Aurora Lighting**:
+   - 3 mobile atmospheric Aurora meshes (`animate-aurora-1`, `animate-aurora-2`, `animate-aurora-3`) with GPU-composited CSS transforms (`translate3d`, `scale`, `opacity`) over 20–26s cycles.
+   - Colors: Upper Violet (`#7C3AED` / `#A855F7`), Opposite Mid Electric Blue (`#2563EB` / `#0EA5E9`), and Lower Cyan (`#06B6D4`).
+   - Deep oceanic underwash (`rgba(11, 16, 32, 0.75)`) replacing pitch-black void with celestial depth.
+   - Opaque desktop lighting kept 100% separate via responsive utilities (`hidden lg:block` vs `block lg:hidden`).
+
+2. **Flowing Light Ribbons (Canvas 2D)**:
+   - Dedicated `drawMobileLightRibbons` function inside existing Canvas 2D engine.
+   - Draws 2 continuous, organic cubic Bézier energy streams framing upper and lower mobile viewport regions.
+   - Linear gradient strokes with soft shadow blur (`shadowBlur: 12-14px`) synchronized with particle time cycle (`timeWave * 0.75`).
+   - Zero extra DOM nodes; static curves when `prefers-reduced-motion` is active.
+
+3. **3-Tier Mobile Particle Field**:
+   - **Layer A (Background Dust, 35 particles)**: $0.8\text{px} - 1.2\text{px}$, faint opacity ($0.15 - 0.28$), zero blur, slow drift.
+   - **Layer B (Visible Ambient, 28 particles)**: $1.3\text{px} - 2.0\text{px}$, moderate opacity ($0.35 - 0.60$), subtle glow on foreground.
+   - **Layer C (Luminous Accent, 12 particles)**: $2.2\text{px} - 3.2\text{px}$, high opacity ($0.65 - 0.90$), distinct glow (`shadowBlur: 7`), riding near ribbon paths.
+   - Mathematical text-safe zone attenuation ($d_{\text{text}}$ falloff) guarantees crisp readability (>15:1 contrast).
+
+4. **Desktop Absolute Preservation**:
+   - Desktop viewports ($\ge 1024\text{px}$) run the 480-particle logarithmic vortex, side-aligned typography, directional vignette, and continuous mouse orbital field with zero modifications.

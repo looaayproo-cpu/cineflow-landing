@@ -50,7 +50,9 @@ module.exports = {
       },
       fontFamily: {
         en: ['var(--font-plus-jakarta)', 'sans-serif'],
-        ar: ['var(--font-cairo)', 'sans-serif'],
+        ar: ['var(--font-body-ar)', 'sans-serif'],
+        'heading-ar': ['var(--font-heading-ar)', 'sans-serif'],
+        'body-ar': ['var(--font-body-ar)', 'sans-serif'],
       },
       borderRadius: {
         '3xl': '1.5rem',
