@@ -30,50 +30,15 @@ export function PricingVault({ onOpenCheckout }: PricingVaultProps) {
 
       <div className="max-w-6xl mx-auto space-y-24 sm:space-y-28">
         {/* ================================================================= */}
-        {/* 1. Pricing Vault Header & Card                                    */}
+        {/* 1. Pricing Vault Centerpiece Card                                */}
         {/* ================================================================= */}
         <div>
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-white/5 shadow-xs mb-4"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#4F46E5] dark:text-[#818CF8] stroke-[1.5]" />
-              <span className="text-xs sm:text-sm font-semibold tracking-wide text-[#4338CA] dark:text-[#C7D2FE]">
-                {pricingData.badge}
-              </span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.2]"
-            >
-              {pricingData.title}
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-4 text-base sm:text-lg text-slate-600 dark:text-zinc-400 font-normal leading-relaxed"
-            >
-              {pricingData.subtitle}
-            </motion.p>
-          </div>
-
           {/* Centerpiece Pricing Card with Luminous Border Beam */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
           >
             <PricingCard onOpenCheckout={onOpenCheckout} />
           </motion.div>

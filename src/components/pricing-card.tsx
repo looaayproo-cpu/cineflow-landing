@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/language-context';
-import { Check, ShieldCheck, Sparkles, ArrowRight, ArrowLeft, Gift } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
@@ -17,8 +16,8 @@ export function PricingCard({ onOpenCheckout }: PricingCardProps) {
 
   const handleCtaClick = () => {
     trackEvent('pricing_cta_clicked', {
-      tierId: 'cineflow-complete-os',
-      price: language === 'ar' ? 499 : 47,
+      tierId: 'cuttoclient-complete-roadmap',
+      price: language === 'ar' ? 399 : 29,
     });
     onOpenCheckout('pricing_card');
   };
@@ -74,44 +73,35 @@ export function PricingCard({ onOpenCheckout }: PricingCardProps) {
           </div>
 
           {/* Tier Name & Subtitle */}
-          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2 leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2 leading-tight">
             {pricingData.tierName}
-          </h3>
+          </h2>
           <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-400 mb-8 leading-relaxed">
             {pricingData.tierSubtitle}
           </p>
 
           {/* Pricing Row */}
           <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/10 mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-baseline gap-3">
                 <span className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
                   {pricingData.launchPrice}
                 </span>
-                <div className="flex flex-col">
-                  <span className="text-base sm:text-lg text-slate-400 dark:text-zinc-500 line-through font-mono font-medium">
-                    {pricingData.originalPrice}
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium">
+                {pricingData.period && (
+                  <span className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 font-medium">
                     {pricingData.period}
                   </span>
+                )}
+              </div>
+
+              {/* Eye-Catching Bold Red Discount Badge */}
+              {pricingData.discountBadge && (
+                <div className="self-start sm:self-auto">
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs sm:text-sm font-bold tracking-wide shadow-xs">
+                    {pricingData.discountBadge}
+                  </span>
                 </div>
-              </div>
-
-              {/* Discount Badge */}
-              <div className="self-start sm:self-auto">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-zinc-300 text-xs font-semibold">
-                  {pricingData.discountBadge}
-                </span>
-              </div>
-            </div>
-
-            {/* Total Real Value Anchor Bar */}
-            <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-between text-xs sm:text-sm text-slate-600 dark:text-zinc-400">
-              <span className="font-medium">{pricingData.totalValueLabel}</span>
-              <span className="font-mono font-bold text-[#4F46E5] dark:text-[#818CF8] text-sm">
-                {pricingData.totalValue}
-              </span>
+              )}
             </div>
           </div>
 
@@ -119,7 +109,7 @@ export function PricingCard({ onOpenCheckout }: PricingCardProps) {
           <button
             onClick={handleCtaClick}
             type="button"
-            className="w-full relative group overflow-hidden rounded-2xl p-[1px] font-bold text-base sm:text-lg transition-transform active:scale-[0.99] shadow-xl shadow-indigo-600/20 dark:shadow-indigo-500/25 mb-6"
+            className="w-full relative group overflow-hidden rounded-2xl p-[1px] font-bold text-base sm:text-lg transition-transform active:scale-[0.99] shadow-xl shadow-indigo-600/20 dark:shadow-indigo-500/25"
           >
             <span className="relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-[#4F46E5] hover:bg-[#4338CA] dark:bg-[#6366F1] dark:hover:bg-[#4F46E5] text-white transition-colors duration-200 font-bold border-t border-white/20">
               <Sparkles className="w-5 h-5 text-indigo-200 animate-pulse" />
@@ -127,62 +117,6 @@ export function PricingCard({ onOpenCheckout }: PricingCardProps) {
               <ArrowIcon className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
             </span>
           </button>
-
-          {/* Guarantee Details Subtext */}
-          <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed mb-8">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-            <p>{pricingData.guaranteeDetails}</p>
-          </div>
-
-          {/* Value Stack Itemized Checklist */}
-          <div>
-            <h4 className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-4 pb-2 border-b border-slate-200 dark:border-white/10">
-              {pricingData.stackHeader}
-            </h4>
-
-            <ul className="space-y-3.5" role="list">
-              {pricingData.items.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-start justify-between gap-3 p-3 rounded-xl transition-colors hover:bg-slate-50 dark:hover:bg-white/5"
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={cn(
-                        'w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 border',
-                        item.isBonus
-                          ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200/60 dark:border-indigo-500/30 text-[#4F46E5] dark:text-[#818CF8]'
-                          : 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/60 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
-                      )}
-                    >
-                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                          {item.title}
-                        </span>
-                        {item.isBonus && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-mono font-black uppercase px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/30 text-[#4F46E5] dark:text-[#A5B4FC]">
-                            <Gift className="w-2.5 h-2.5" />
-                            {pricingData.bonusBadge}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                        {item.description}
-                      </span>
-                    </div>
-                  </div>
-
-                  <span className="font-mono text-xs font-bold text-slate-500 dark:text-zinc-400 px-2 py-1 rounded-md bg-slate-100 dark:bg-white/5 shrink-0">
-                    {item.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
     </div>

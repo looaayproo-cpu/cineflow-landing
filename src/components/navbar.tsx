@@ -37,7 +37,6 @@ export function Navbar({ onOpenCheckout }: NavbarProps) {
 
   const navLinks = [
     { href: '#curriculum', label: copy.navbar.curriculum },
-    { href: '#stack', label: copy.navbar.stack },
     { href: '#wall', label: copy.navbar.wall },
     { href: '#pricing', label: copy.navbar.pricing },
     { href: '#faq', label: copy.navbar.faq },
@@ -60,7 +59,7 @@ export function Navbar({ onOpenCheckout }: NavbarProps) {
         <a
           href="#"
           className="flex items-center gap-2.5 group cursor-pointer"
-          aria-label="CineFlow Home"
+          aria-label="CutToClient Home"
         >
           <div className="relative flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#4F46E5] dark:bg-[#6366F1] text-white shadow-md shadow-indigo-500/25 transition-transform duration-300 group-hover:scale-105">
             <Film className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
@@ -68,7 +67,7 @@ export function Navbar({ onOpenCheckout }: NavbarProps) {
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-              CineFlow
+              CutToClient
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
             </span>
             <span className="text-[10px] text-slate-500 dark:text-zinc-400 -mt-0.5 hidden sm:inline font-medium">

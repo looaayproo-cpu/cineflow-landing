@@ -26,17 +26,18 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'CineFlow Roadmap | من الصفر إلى أول عميل فيديو مونتاج مدفوع',
+  title: 'CutToClient | طريقك من الصفر لمونتير معاه بورتفوليو وعملاء جاهزين',
   description:
-    'خارطة طريق المونتير المحترف الشاملة على Notion: احتراف Premiere Pro وAfter Effects وأدوات الذكاء الاصطناعي مع خطة اكتساب العملاء وعقود العمل.',
+    'خطة CutToClient: دليلك الشامل من الصفر حتى أول عميل. وفر شهور من التوهان في شروحات اليوتيوب بملف نوشن تفاعلي واحترافي.',
   keywords: [
+    'CutToClient',
     'video editing',
     'premiere pro roadmap',
     'after effects roadmap',
     'freelance video editor',
     'notion template',
     'مونتاج فيديو',
-    'خارطة طريق المونتير',
+    'خريطة طريق المونتير',
   ],
 };
 

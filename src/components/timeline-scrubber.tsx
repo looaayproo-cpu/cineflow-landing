@@ -176,16 +176,16 @@ export function TimelineScrubber() {
 
   // Clean, human-crafted labels for mobile 2x2 grid
   const mobilePillLabelsAr = [
-    'المحور 1: Premiere Pro',
-    'المحور 2: After Effects',
-    'المحور 3: صناعة الريلز',
-    'المحور 4: صيد العملاء والـ AI',
+    'المحور 1: الأدوات والأساسيات',
+    'المحور 2: التغذية والبورتفوليو',
+    'المحور 3: استراتيجيات صيد العملاء',
+    'المحور 4: صندوق أدوات المونتير',
   ];
   const mobilePillLabelsEn = [
-    'Pillar 1: Premiere Pro',
-    'Pillar 2: After Effects',
-    'Pillar 3: Reels & Showreel',
-    'Pillar 4: Clients & AI',
+    'Phase 1: Tools & Foundations',
+    'Phase 2: Taste & Portfolio',
+    'Phase 3: Client Acquisition',
+    'Phase 4: Editor Toolkit',
   ];
 
   return (
@@ -391,7 +391,7 @@ export function TimelineScrubber() {
                 )}
                 style={{ width: '25%' }}
               >
-                <span className="truncate">PR_ROUGH_CUT</span>
+                <span className="truncate">TOOLS_BASICS</span>
               </div>
               <div
                 className={cn(
@@ -402,7 +402,7 @@ export function TimelineScrubber() {
                 )}
                 style={{ width: '25%' }}
               >
-                <span className="truncate">AE_KINETIC</span>
+                <span className="truncate">FEEDING_PORTFOLIO</span>
               </div>
               <div
                 className={cn(
@@ -413,7 +413,7 @@ export function TimelineScrubber() {
                 )}
                 style={{ width: '25%' }}
               >
-                <span className="truncate">REELS_SHOWREEL</span>
+                <span className="truncate">CLIENT_STRATEGY</span>
               </div>
               <div
                 className={cn(
@@ -424,7 +424,7 @@ export function TimelineScrubber() {
                 )}
                 style={{ width: '24%' }}
               >
-                <span className="truncate">CLIENT_ACQUISITION</span>
+                <span className="truncate">TOOLKIT_VAULT</span>
               </div>
             </div>
           </div>
@@ -578,16 +578,18 @@ export function TimelineScrubber() {
             </div>
 
             {/* Actionable Milestones Checklist */}
-            <div className="space-y-2 pt-1">
-              {currentStage.milestones.map((m, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5 stroke-[1.5]" />
-                  <span className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 font-normal leading-relaxed">
-                    {m}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {currentStage.milestones && currentStage.milestones.length > 0 && (
+              <div className="space-y-2 pt-1">
+                {currentStage.milestones.map((m, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5 stroke-[1.5]" />
+                    <span className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 font-normal leading-relaxed">
+                      {m}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Clean Educational Outcome Box */}
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/10 mt-3">

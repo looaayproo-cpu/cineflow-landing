@@ -52,7 +52,7 @@ export function CheckoutModal({ isOpen, onClose, triggerSource = 'default' }: Ch
       setError('');
       // Generate a realistic order confirmation code
       const randomCode = Math.floor(10000 + Math.random() * 90000);
-      setGeneratedOrderId(`CF-2026-${randomCode}`);
+      setGeneratedOrderId(`CTC-2026-${randomCode}`);
     }
   }, [isOpen, triggerSource]);
 
@@ -131,7 +131,7 @@ export function CheckoutModal({ isOpen, onClose, triggerSource = 'default' }: Ch
         paymentPhone: paymentPhone.trim(),
         receiptAttached: Boolean(receiptFileName),
         experienceLevel,
-        tierId: 'cineflow-complete-os',
+        tierId: 'cuttoclient-complete-roadmap',
         submittedLanguage: language,
         submittedTheme: isDarkMode ? 'dark' : 'light',
       });

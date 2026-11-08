@@ -24,7 +24,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check saved preference in localStorage
-    const saved = localStorage.getItem('cineflow-language') as Language | null;
+    const saved = (localStorage.getItem('cuttoclient-language') ||
+      localStorage.getItem('cineflow-language')) as Language | null;
     if (saved && (saved === 'ar' || saved === 'en')) {
       setLanguageState(saved);
       document.documentElement.setAttribute('dir', saved === 'ar' ? 'rtl' : 'ltr');
@@ -41,7 +42,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const prev = language;
     setLanguageState(lang);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('cineflow-language', lang);
+      localStorage.setItem('cuttoclient-language', lang);
       document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       document.documentElement.setAttribute('lang', lang);
       trackEvent('language_toggled', { from: prev, to: lang });

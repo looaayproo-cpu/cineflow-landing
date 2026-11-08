@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Navbar } from '@/components/navbar';
 import { HeroSection } from '@/components/hero-section';
 import { CurriculumSection } from '@/components/curriculum-section';
-import { BentoGrid } from '@/components/bento-grid';
 import { EditorsWall } from '@/components/editors-wall';
 import { PricingVault } from '@/components/pricing-vault';
 import { Footer } from '@/components/footer';
@@ -29,9 +28,6 @@ export default function HomePage() {
 
       {/* Dedicated Interactive Curriculum Timeline Section */}
       <CurriculumSection />
-
-      {/* Inside The Roadmap Bento Grid Section (Curriculum & Toolchain Showcase) */}
-      <BentoGrid />
 
       {/* The Editors' Wall Testimonials Infinite Marquee */}
       <EditorsWall />

@@ -40,13 +40,13 @@ export function Footer() {
             <a
               href="#"
               className="inline-flex items-center gap-2.5 group cursor-pointer"
-              aria-label="CineFlow Home"
+              aria-label="CutToClient Home"
             >
               <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-[#4F46E5] dark:bg-[#6366F1] text-white shadow-md shadow-indigo-500/25 border-t border-white/20">
                 <Film className="w-4 h-4 stroke-[2.2]" />
               </div>
               <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-                CineFlow
+                CutToClient
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
               </span>
             </a>
