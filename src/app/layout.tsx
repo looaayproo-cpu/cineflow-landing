@@ -8,14 +8,14 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   variable: '--font-heading-ar',
   display: 'swap',
-  weight: ['600', '700'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const notoSansArabic = Noto_Sans_Arabic({
   subsets: ['arabic'],
   variable: '--font-body-ar',
   display: 'swap',
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({

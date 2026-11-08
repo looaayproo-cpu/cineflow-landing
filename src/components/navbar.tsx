@@ -70,7 +70,7 @@ export function Navbar({ onOpenCheckout }: NavbarProps) {
               CutToClient
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-zinc-400 -mt-0.5 hidden sm:inline font-medium">
+            <span className="text-[11px] text-slate-500 dark:text-zinc-400 -mt-0.5 hidden sm:inline font-medium">
               Notion Roadmap
             </span>
           </div>

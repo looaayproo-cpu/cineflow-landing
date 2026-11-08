@@ -314,9 +314,9 @@ export function TestimonialCard({
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
                   {testimonial.name}
-                </h4>
+                </h3>
                 <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
               </div>
               <p className="text-[11px] font-mono text-slate-500 dark:text-zinc-400 truncate">
@@ -326,7 +326,7 @@ export function TestimonialCard({
           </div>
 
           {/* Revenue / Milestone Proof Badge */}
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-[10px] font-mono font-bold shrink-0 shadow-sm">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-[11px] font-mono font-bold shrink-0 shadow-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
             <span className="truncate max-w-[130px] sm:max-w-none">
               {testimonial.badge}
@@ -439,7 +439,7 @@ export function TestimonialCard({
             <button
               type="button"
               onClick={handleCycleSpeed}
-              className="px-2 py-0.5 rounded-full text-[10px] font-semibold border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#181820] text-slate-700 dark:text-zinc-300 hover:text-[#4F46E5] dark:hover:text-[#818CF8] transition-colors"
+              className="px-2 py-0.5 rounded-full text-[11px] font-semibold border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#181820] text-slate-700 dark:text-zinc-300 hover:text-[#4F46E5] dark:hover:text-[#818CF8] transition-colors"
               title="Toggle audio playback speed"
             >
               {playbackSpeed}x

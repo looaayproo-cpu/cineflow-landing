@@ -219,7 +219,7 @@ export function TimelineScrubber() {
           <span className="text-[#0EA5E9] tracking-wider font-semibold">
             {formatTimecode(progress)}
           </span>
-          <span className="text-[10px] text-zinc-500 hidden xl:inline">24 FPS</span>
+          <span className="text-[11px] text-zinc-400 hidden xl:inline">24 FPS</span>
         </div>
 
         {/* Playback Controls */}
@@ -294,7 +294,7 @@ export function TimelineScrubber() {
                   }
                 />
               </div>
-              <span className="text-xs sm:text-sm font-semibold truncate mt-0.5">
+              <span className="text-xs sm:text-sm font-semibold truncate mt-0.5 font-heading-ar">
                 {stg.title.split(':')[1]?.trim() || stg.title}
               </span>
               {isActive && (
@@ -326,7 +326,7 @@ export function TimelineScrubber() {
         tabIndex={0}
       >
         {/* Ruler frame markings */}
-        <div className="flex justify-between items-end h-5 mb-2 font-mono text-[9px] text-slate-500 dark:text-zinc-500 border-b border-slate-300/80 dark:border-white/10 pb-1">
+        <div className="flex justify-between items-end h-5 mb-2 font-mono text-[11px] text-slate-600 dark:text-zinc-400 border-b border-slate-300/80 dark:border-white/10 pb-1 font-medium">
           <span>00:00:00</span>
           <span>00:00:15</span>
           <span>00:00:30</span>
@@ -338,11 +338,11 @@ export function TimelineScrubber() {
         <div className="space-y-2 relative">
           {/* Layer V2: Motion & Hooks */}
           <div className="flex items-center gap-2">
-            <span className="w-8 text-[10px] font-mono text-slate-500 dark:text-zinc-500 text-end font-semibold">V2</span>
-            <div className="flex-1 h-7 rounded-lg bg-white dark:bg-[#181822] border border-slate-200/80 dark:border-white/10 flex items-center px-1 gap-1 relative overflow-hidden shadow-xs">
+            <span className="w-8 text-[11px] font-mono text-slate-600 dark:text-zinc-400 text-end font-semibold">V2</span>
+            <div className="flex-1 h-8 rounded-lg bg-white dark:bg-[#181822] border border-slate-200/80 dark:border-white/10 flex items-center px-1 gap-1 relative overflow-hidden shadow-xs">
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 1
                     ? 'bg-[#0EA5E9]'
                     : 'bg-sky-500/70 dark:bg-sky-500/40 text-[#E0F2FE]'
@@ -354,7 +354,7 @@ export function TimelineScrubber() {
               </div>
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 2
                     ? 'bg-[#6366F1]'
                     : 'bg-indigo-500/70 dark:bg-indigo-500/40 text-[#EEF2FF]'
@@ -366,7 +366,7 @@ export function TimelineScrubber() {
               </div>
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 3
                     ? 'bg-[#38BDF8] text-slate-900'
                     : 'bg-sky-400/70 dark:bg-sky-400/40 text-slate-900 dark:text-[#E0F2FE]'
@@ -380,11 +380,11 @@ export function TimelineScrubber() {
 
           {/* Layer V1: Core Pillars */}
           <div className="flex items-center gap-2">
-            <span className="w-8 text-[10px] font-mono text-slate-500 dark:text-zinc-500 text-end font-semibold">V1</span>
-            <div className="flex-1 h-7 rounded-lg bg-white dark:bg-[#181822] border border-slate-200/80 dark:border-white/10 flex items-center px-1 gap-1 relative overflow-hidden shadow-xs">
+            <span className="w-8 text-[11px] font-mono text-slate-600 dark:text-zinc-400 text-end font-semibold">V1</span>
+            <div className="flex-1 h-8 rounded-lg bg-white dark:bg-[#181822] border border-slate-200/80 dark:border-white/10 flex items-center px-1 gap-1 relative overflow-hidden shadow-xs">
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 0
                     ? 'bg-[#4F46E5]'
                     : 'bg-indigo-600/70 dark:bg-indigo-600/40 text-[#EEF2FF]'
@@ -395,7 +395,7 @@ export function TimelineScrubber() {
               </div>
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 1
                     ? 'bg-[#0EA5E9]'
                     : 'bg-sky-500/70 dark:bg-sky-500/40 text-[#E0F2FE]'
@@ -406,7 +406,7 @@ export function TimelineScrubber() {
               </div>
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 2
                     ? 'bg-[#6366F1]'
                     : 'bg-indigo-500/70 dark:bg-indigo-500/40 text-[#EEF2FF]'
@@ -417,7 +417,7 @@ export function TimelineScrubber() {
               </div>
               <div
                 className={cn(
-                  'h-5 rounded px-2 flex items-center text-[10px] font-semibold text-white transition-all',
+                  'h-6 rounded px-2 flex items-center text-[11px] font-semibold text-white transition-all',
                   activeStageIndex === 3
                     ? 'bg-[#38BDF8] text-slate-900'
                     : 'bg-sky-400/70 dark:bg-sky-400/40 text-slate-900 dark:text-[#E0F2FE]'
@@ -431,7 +431,7 @@ export function TimelineScrubber() {
 
           {/* Layer A1: Dialogue */}
           <div className="flex items-center gap-2">
-            <span className="w-8 text-[10px] font-mono text-slate-500 dark:text-zinc-500 text-end font-semibold">A1</span>
+            <span className="w-8 text-[11px] font-mono text-slate-600 dark:text-zinc-400 text-end font-semibold">A1</span>
             <div className="flex-1 h-6 rounded-lg bg-white dark:bg-[#14141c] border border-slate-200/80 dark:border-white/10 flex items-center px-3 relative overflow-hidden shadow-xs">
               <div className="flex items-center gap-0.5 w-full h-full opacity-60">
                 {Array.from({ length: 48 }).map((_, i) => (
@@ -449,7 +449,7 @@ export function TimelineScrubber() {
 
           {/* Layer A2: SFX */}
           <div className="flex items-center gap-2">
-            <span className="w-8 text-[10px] font-mono text-slate-500 dark:text-zinc-500 text-end font-semibold">A2</span>
+            <span className="w-8 text-[11px] font-mono text-slate-600 dark:text-zinc-400 text-end font-semibold">A2</span>
             <div className="flex-1 h-6 rounded-lg bg-white dark:bg-[#14141c] border border-slate-200/80 dark:border-white/10 flex items-center px-3 relative overflow-hidden shadow-xs">
               <div className="flex items-center gap-0.5 w-full h-full opacity-50">
                 {Array.from({ length: 48 }).map((_, i) => (
@@ -572,37 +572,39 @@ export function TimelineScrubber() {
               <p className="text-xs sm:text-sm font-semibold text-[#4F46E5] dark:text-[#818CF8]">
                 {currentStage.subtitle}
               </p>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal pt-1">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal pt-1 max-w-3xl">
                 {currentStage.description}
               </p>
             </div>
 
-            {/* Actionable Milestones Checklist */}
-            {currentStage.milestones && currentStage.milestones.length > 0 && (
-              <div className="space-y-2 pt-1">
-                {currentStage.milestones.map((m, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5 stroke-[1.5]" />
-                    <span className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 font-normal leading-relaxed">
-                      {m}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Clean Educational Outcome Box */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/10 mt-3">
-              <div className="flex items-center gap-1.5 text-slate-600 dark:text-zinc-400 text-xs font-medium mb-1.5">
+            {/* Repositioned Destination Box: Educational Outcome & Actionable Milestones */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/10 mt-4">
+              <div className="flex items-center gap-1.5 text-slate-600 dark:text-zinc-400 text-xs font-medium mb-3">
                 <TrendingUp className="w-3.5 h-3.5 text-[#4F46E5] dark:text-[#818CF8] stroke-[1.5]" />
                 <span>{direction === 'rtl' ? 'النتيجة العملية للمحور' : 'Expected Outcome'}</span>
               </div>
-              <div className="text-xl sm:text-2xl font-bold tracking-tight text-[#4F46E5] dark:text-[#818CF8]">
-                {currentStage.metric.value}
-              </div>
-              <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
-                {currentStage.metric.label}
-              </p>
+
+              {currentStage.milestones && currentStage.milestones.length > 0 ? (
+                <div className="space-y-2.5">
+                  {currentStage.milestones.map((m, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5 stroke-[1.5]" />
+                      <span className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 font-normal leading-relaxed">
+                        {m}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold tracking-tight text-[#4F46E5] dark:text-[#818CF8]">
+                    {currentStage.metric.value}
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
+                    {currentStage.metric.label}
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
         </AnimatePresence>
