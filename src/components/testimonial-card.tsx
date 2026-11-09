@@ -29,23 +29,29 @@ export function TestimonialCard({
 
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [playbackSpeed, setPlaybackSpeed] = useState<1 | 1.5 | 2>(1);
+  const [actualDuration, setActualDuration] = useState<number | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const pulseIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const animFrameRef = useRef<number | null>(null);
-  const lastTimeRef = useRef<number | null>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
+  const onTogglePlayRef = useRef(onTogglePlay);
 
-  const totalDuration = testimonial.durationSeconds || 28;
+  useEffect(() => {
+    onTogglePlayRef.current = onTogglePlay;
+  }, [onTogglePlay]);
+
+  const totalDuration = actualDuration || testimonial.durationSeconds || 28;
   const audioSource = (testimonial.audioSrc || testimonial.audioUrl || '').trim();
 
-  // Generate initials from name
-  const initials = testimonial.name
-    .split(' ')
+  // Clean name by stripping common prefixes (e.g., 'أ/', 'م/', 'Eng.') to generate dignified initials
+  const cleanName = testimonial.name
+    .replace(/^(أ|م|د|مهندس|أستاذ|دكتور|Eng\.|Dr\.)\/?\s*/i, '')
+    .trim();
+  const initials = cleanName
+    .split(/\s+/)
+    .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0])
-    .join('');
+    .join(isRtl ? ' ' : '');
 
   // Format seconds to mm:ss
   const formatTime = (timeInSec: number) => {
@@ -55,222 +61,85 @@ export function TestimonialCard({
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  // Safe Web Audio API initialization
-  const getAudioContext = useCallback(() => {
-    if (typeof window === 'undefined') return null;
-    if (!audioCtxRef.current) {
-      const AudioCtxClass =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioCtxClass) {
-        audioCtxRef.current = new AudioCtxClass();
-      }
-    }
-    if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
-      audioCtxRef.current.resume().catch(() => {});
-    }
-    return audioCtxRef.current;
-  }, []);
-
-  // Studio Sound Effects: Start Chime
-  const playStudioChime = useCallback(() => {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    try {
-      const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      // Soft D5 -> A5 tone
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, now);
-      osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
-
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.2);
-    } catch {
-      // AudioContext fallback grace
-    }
-  }, [getAudioContext]);
-
-  // Studio Sound Effects: Subtle Studio Pulse Tick
-  const playStudioPulse = useCallback(() => {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
-    try {
-      const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(392, now); // G4 soft acoustic tone
-
-      gain.gain.setValueAtTime(0.02, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.04);
-    } catch {
-      // AudioContext fallback grace
-    }
-  }, [getAudioContext]);
-
-  // Handle native HTML5 Audio ONLY when audioSource is actually provided
+  // Play / Pause Native Audio cleanly (NEVER re-seeks or loops)
   useEffect(() => {
-    if (!audioSource) {
-      audioRef.current = null;
-      return;
-    }
+    const audio = audioRef.current;
+    if (!audio || !audioSource) return;
 
-    const audio = new Audio(audioSource);
-    audioRef.current = audio;
-    audio.preload = 'none';
-    audio.playbackRate = playbackSpeed;
-
-    const handleTimeUpdate = () => {
-      if (audio) {
-        setCurrentTime(audio.currentTime);
+    if (isPlaying) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Audio playback error:', err);
+        });
       }
-    };
-
-    const handleEnded = () => {
-      setCurrentTime(0);
-      if (isPlaying) {
-        onTogglePlay();
-      }
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
-
-    return () => {
+    } else {
       audio.pause();
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
-      audioRef.current = null;
-    };
-  }, [audioSource, isPlaying, onTogglePlay, playbackSpeed]);
+    }
+  }, [isPlaying, audioSource]);
 
-  // Sync playback rate with real audio
+  // Sync playback speed
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.playbackRate = playbackSpeed;
     }
   }, [playbackSpeed]);
 
-  // Simulation loop callback for smooth 60fps waveform playback when mp3 is missing
-  const simulationStep = useCallback(
-    (timestamp: number) => {
-      if (!lastTimeRef.current) {
-        lastTimeRef.current = timestamp;
-      }
-      const deltaSec = (timestamp - lastTimeRef.current) / 1000;
-      lastTimeRef.current = timestamp;
-
-      setCurrentTime((prev) => {
-        const next = prev + deltaSec * playbackSpeed;
-        if (next >= totalDuration) {
-          if (animFrameRef.current) {
-            cancelAnimationFrame(animFrameRef.current);
-            animFrameRef.current = null;
-          }
-          if (pulseIntervalRef.current) {
-            clearInterval(pulseIntervalRef.current);
-            pulseIntervalRef.current = null;
-          }
-          lastTimeRef.current = null;
-          // Trigger stop on parent
-          setTimeout(() => {
-            onTogglePlay();
-          }, 0);
-          return 0;
-        }
-        return next;
-      });
-
-      animFrameRef.current = requestAnimationFrame(simulationStep);
-    },
-    [playbackSpeed, totalDuration, onTogglePlay]
-  );
-
-  // Play / Pause Coordinator
+  // Smooth UI progress loop while playing (reads audio.currentTime without touching or resetting it)
   useEffect(() => {
-    if (isPlaying) {
-      if (audioSource && audioRef.current) {
-        // Native HTML5 Audio
-        audioRef.current.currentTime = currentTime;
-        audioRef.current.play().catch(() => {
-          // In case real file errors, fallback to simulation
-          playStudioChime();
-          lastTimeRef.current = null;
-          animFrameRef.current = requestAnimationFrame(simulationStep);
-        });
-      } else {
-        // Built-in Studio Fallback (Zero network requests, zero 404s!)
-        playStudioChime();
+    if (!isPlaying) return;
 
-        // Start periodic subtle studio pulses synchronized with playback speed
-        if (pulseIntervalRef.current) clearInterval(pulseIntervalRef.current);
-        pulseIntervalRef.current = setInterval(() => {
-          playStudioPulse();
-        }, Math.max(250, Math.round(600 / playbackSpeed)));
-
-        lastTimeRef.current = null;
-        animFrameRef.current = requestAnimationFrame(simulationStep);
-      }
-    } else {
-      // Pause native audio
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      // Cancel simulation & studio pulses
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-        animFrameRef.current = null;
-      }
-      if (pulseIntervalRef.current) {
-        clearInterval(pulseIntervalRef.current);
-        pulseIntervalRef.current = null;
-      }
-      lastTimeRef.current = null;
-    }
-
-    return () => {
-      if (animFrameRef.current) {
-        cancelAnimationFrame(animFrameRef.current);
-        animFrameRef.current = null;
-      }
-      if (pulseIntervalRef.current) {
-        clearInterval(pulseIntervalRef.current);
-        pulseIntervalRef.current = null;
+    let animId: number;
+    const tick = () => {
+      const audio = audioRef.current;
+      if (audio && !audio.paused && !audio.ended) {
+        setCurrentTime(audio.currentTime);
+        animId = requestAnimationFrame(tick);
       }
     };
-  }, [isPlaying, audioSource, simulationStep, playStudioChime, playStudioPulse, playbackSpeed, currentTime]);
+    animId = requestAnimationFrame(tick);
 
-  // Handle Scrubbing (Clicking on waveform)
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+    };
+  }, [isPlaying]);
+
+  // Audio Event Handlers
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      const dur = audioRef.current.duration;
+      if (dur && isFinite(dur) && dur > 0) {
+        setActualDuration(Math.round(dur));
+      }
+    }
+  };
+
+  const handleEnded = () => {
+    setCurrentTime(0);
+    if (isPlaying) {
+      onTogglePlayRef.current();
+    }
+  };
+
+  // Handle Scrubbing (Clicking on waveform) - user initiated seek ONLY
   const handleScrub = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!waveformRef.current) return;
+    if (!waveformRef.current || !audioRef.current) return;
     const rect = waveformRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
-    const progress = Math.max(0, Math.min(1, clickX / rect.width));
+    const rawFraction = isRtl
+      ? (rect.width - clickX) / rect.width
+      : clickX / rect.width;
+    const progress = Math.max(0, Math.min(1, rawFraction));
     const targetSeconds = progress * totalDuration;
 
+    audioRef.current.currentTime = targetSeconds;
     setCurrentTime(targetSeconds);
-
-    if (audioRef.current && audioSource) {
-      audioRef.current.currentTime = targetSeconds;
-    }
   };
 
   // Speed Toggle
@@ -285,78 +154,105 @@ export function TestimonialCard({
     <div
       dir={direction}
       className={cn(
-        'group relative flex flex-col justify-between w-[320px] sm:w-[410px] min-h-[310px] p-5 sm:p-6 rounded-3xl shrink-0 select-none transition-all duration-300 snap-center',
-        'bg-white dark:bg-[#121217] border border-slate-200/80 dark:border-white/10 shadow-md shadow-black/[0.03] dark:shadow-none',
+        'group relative flex flex-col justify-between w-[86vw] max-w-[340px] sm:max-w-none sm:w-[380px] lg:w-auto h-full p-5 sm:p-6 rounded-3xl shrink-0 select-none transition-all duration-300 snap-center',
+        'bg-white dark:bg-[#121217] border border-slate-200/80 dark:border-white/10 shadow-sm shadow-black/[0.03]',
         isPlaying
-          ? 'border-[#4F46E5] shadow-lg shadow-indigo-500/10 dark:border-[#6366F1]'
-          : 'hover:border-indigo-400/40 dark:hover:border-white/20 hover:shadow-lg hover:shadow-black/[0.04]'
+          ? 'border-indigo-600 dark:border-indigo-500 ring-2 ring-indigo-500/20 shadow-md shadow-black/5'
+          : 'hover:border-slate-300 dark:hover:border-zinc-700/80 hover:shadow-md hover:shadow-black/5'
       )}
     >
-      {/* Top Ambient Highlight on Active/Hover */}
-      <div
-        className={cn(
-          'pointer-events-none absolute -top-10 -inset-x-0 h-24 bg-gradient-to-b from-[#6366F1]/15 to-transparent rounded-t-3xl blur-xl transition-opacity duration-300',
-          isPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-        )}
-      />
+      {/* Hidden Native Audio Element */}
+      {audioSource && (
+        <audio
+          ref={audioRef}
+          src={audioSource}
+          preload="metadata"
+          playsInline
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={handleEnded}
+        />
+      )}
 
-      {/* 1. Header: Avatar, Name, Handle & Retainer Milestone Badge */}
-      <div>
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            {/* Stylized Avatar Pill (Cinema Indigo) */}
-            <div className="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs text-white bg-[#4F46E5] dark:bg-[#6366F1] shadow-md shadow-indigo-500/25 shrink-0">
-              {initials}
-              {isPlaying && (
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#10B981] border-2 border-white dark:border-[#121217] animate-ping" />
-              )}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                  {testimonial.name}
-                </h3>
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
-              </div>
-              <p className="text-[11px] font-mono text-slate-500 dark:text-zinc-400 truncate">
-                {testimonial.handle}
-              </p>
-            </div>
+      {/* Top Body Section: Profile Header -> Achievement Badge -> Quote */}
+      <div className="flex flex-col flex-1">
+        {/* 1. Profile Header: Avatar + Full Name + Verification + Username */}
+        <div className="flex items-center gap-3.5 mb-3">
+          {/* Avatar Pill */}
+          <div className="relative w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white bg-indigo-600 dark:bg-indigo-600 shadow-sm shrink-0">
+            {initials}
+            {isPlaying && (
+              <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#121217]" />
+            )}
           </div>
 
-          {/* Revenue / Milestone Proof Badge */}
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-[11px] font-mono font-bold shrink-0 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-            <span className="truncate max-w-[130px] sm:max-w-none">
+          {/* User Name & Handle */}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white leading-snug">
+                {testimonial.name}
+              </h3>
+              <CheckCircle2
+                className="w-4 h-4 text-emerald-500 shrink-0"
+                aria-label={isRtl ? 'حساب موثق' : 'Verified Student'}
+              />
+            </div>
+            <p
+              className="text-xs text-slate-500 dark:text-zinc-400 font-mono truncate mt-0.5 rtl:text-right ltr:text-left"
+              dir="ltr"
+            >
+              {testimonial.handle}
+            </p>
+          </div>
+        </div>
+
+        {/* 2. Achievement / Milestone Badge (Dedicated row, full width breathing room) */}
+        <div className="mb-3.5">
+          <div
+            className={cn(
+              'inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 dark:bg-emerald-950/40 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 text-xs font-semibold shadow-xs max-w-full',
+              isRtl ? 'font-sans' : 'font-mono'
+            )}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            <span className="leading-snug break-words">
               {testimonial.badge}
             </span>
           </div>
         </div>
 
-        {/* 2. WhatsApp / Studio Voice Caption Bubble */}
-        <div className="relative my-2.5 px-3.5 py-2 rounded-2xl bg-slate-50/80 dark:bg-[#181820] border border-slate-200/70 dark:border-zinc-800 flex items-start gap-2 shadow-xs">
-          <Mic className="w-3.5 h-3.5 text-[#0EA5E9] shrink-0 mt-0.5" />
-          <p className="text-xs font-semibold text-slate-800 dark:text-zinc-200 leading-snug line-clamp-2">
+        {/* 3. WhatsApp / Studio Voice Caption Bubble */}
+        <div className="relative mb-4 px-3.5 py-3 rounded-2xl bg-slate-50/90 dark:bg-[#181820] border border-slate-200/70 dark:border-zinc-800/80 flex items-start gap-2.5 shadow-xs flex-1">
+          <Mic className="w-4 h-4 text-sky-500 shrink-0 mt-0.5" />
+          <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-zinc-200 leading-relaxed">
             &ldquo;{testimonial.voiceCaption || testimonial.quote}&rdquo;
           </p>
         </div>
       </div>
 
-      {/* 3. Authentic Studio Voice Note Console */}
-      <div className="mt-2 pt-3 border-t border-slate-100 dark:border-border-subtle">
-        <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#0a0a0f] border border-slate-200/80 dark:border-border-subtle flex flex-col gap-2.5">
+      {/* Bottom Section: Audio Player Console + Footer */}
+      <div className="mt-auto">
+        {/* 4. Authentic Studio Voice Note Console */}
+        <div className="pt-3 border-t border-slate-100 dark:border-zinc-800/80 flex flex-col gap-2.5">
           {/* Top Row: Play/Pause button + 28-Bar Waveform */}
           <div className="flex items-center gap-3">
-            {/* Circular Play / Pause Button (Cinema Indigo) */}
+            {/* Circular Play / Pause Button */}
             <button
               type="button"
               onClick={onTogglePlay}
-              aria-label={isPlaying ? 'Pause voice note' : 'Play voice note'}
+              aria-label={
+                isPlaying
+                  ? isRtl
+                    ? 'إيقاف مؤقت للتسجيل الصوتي'
+                    : 'Pause voice note'
+                  : isRtl
+                  ? 'تشغيل التسجيل الصوتي'
+                  : 'Play voice note'
+              }
               className={cn(
-                'relative w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-white font-bold transition-all duration-200 shadow-md',
-                'bg-[#4F46E5] hover:bg-[#4338CA] dark:bg-[#6366F1] dark:hover:bg-[#4F46E5] hover:scale-105 active:scale-95 shadow-indigo-500/25',
-                isPlaying && 'ring-4 ring-indigo-500/25 ring-offset-1 dark:ring-offset-[#0a0a0f]'
+                'relative w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-white font-bold transition-all duration-200 shadow-sm',
+                'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+                isPlaying && 'ring-4 ring-indigo-500/25 ring-offset-1 dark:ring-offset-[#121217]'
               )}
             >
               {isPlaying ? (
@@ -375,8 +271,14 @@ export function TestimonialCard({
             <div
               ref={waveformRef}
               onClick={handleScrub}
-              className="flex-1 h-9 px-2 py-1 rounded-xl bg-white/70 dark:bg-[#121217] border border-slate-200/70 dark:border-zinc-800/80 flex items-center justify-between gap-1 cursor-pointer select-none group/wave hover:border-indigo-400/50 transition-colors"
-              title="Click anywhere to scrub playback"
+              role="slider"
+              tabIndex={0}
+              aria-label={isRtl ? 'مؤشر تقدم التسجيل الصوتي' : 'Voice note progress'}
+              aria-valuenow={Math.round(currentTime)}
+              aria-valuemin={0}
+              aria-valuemax={totalDuration}
+              className="flex-1 h-11 px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-[#0c0c10] border border-slate-200/80 dark:border-zinc-800 flex items-center justify-between gap-1 cursor-pointer select-none group/wave hover:border-indigo-400/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              title={isRtl ? 'انقر في أي مكان للتخطي' : 'Click anywhere to scrub playback'}
             >
               {testimonial.waveformBars.map((heightFactor, idx) => {
                 const barFraction = (idx + 1) / testimonial.waveformBars.length;
@@ -395,8 +297,8 @@ export function TestimonialCard({
                       className={cn(
                         'w-full max-w-[4px] rounded-full transition-all duration-150',
                         isPassed
-                          ? 'bg-[#4F46E5] dark:bg-[#6366F1] shadow-xs'
-                          : 'bg-slate-300/80 dark:bg-zinc-700/60 group-hover/wave:bg-slate-400 dark:group-hover/wave:bg-zinc-600'
+                          ? 'bg-indigo-600 dark:bg-indigo-500'
+                          : 'bg-slate-300 dark:bg-zinc-700/70 group-hover/wave:bg-slate-400 dark:group-hover/wave:bg-zinc-600'
                       )}
                       style={{
                         height: `${heightPercent}%`,
@@ -425,37 +327,51 @@ export function TestimonialCard({
           </div>
 
           {/* Bottom Row: Timer & Speed Toggle */}
-          <div className="flex items-center justify-between px-1 text-[11px] font-mono font-medium text-slate-500 dark:text-zinc-400">
-            {/* Live elapsed / total timer */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-slate-900 dark:text-white font-semibold tabular-nums">
+          <div className="flex items-center justify-between px-1 text-xs font-mono font-medium text-slate-500 dark:text-zinc-400">
+            {/* Live elapsed / total timer - forced LTR so 0:00 is on left and total on right */}
+            <div className="flex items-center gap-1.5 tabular-nums text-xs" dir="ltr">
+              <span className="text-slate-900 dark:text-white font-semibold">
                 {formatTime(currentTime)}
               </span>
               <span className="text-slate-400 dark:text-zinc-600">/</span>
-              <span className="tabular-nums">{formatTime(totalDuration)}</span>
+              <span className="text-slate-500 dark:text-zinc-400">
+                {formatTime(totalDuration)}
+              </span>
             </div>
 
             {/* Playback speed toggle */}
             <button
               type="button"
               onClick={handleCycleSpeed}
-              className="px-2 py-0.5 rounded-full text-[11px] font-semibold border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#181820] text-slate-700 dark:text-zinc-300 hover:text-[#4F46E5] dark:hover:text-[#818CF8] transition-colors"
-              title="Toggle audio playback speed"
+              aria-label={
+                isRtl
+                  ? `سرعة تشغيل الصوت ${playbackSpeed} ضعف`
+                  : `Playback speed ${playbackSpeed}x`
+              }
+              className="px-2.5 py-1 rounded-full text-xs font-semibold border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#181820] text-slate-700 dark:text-zinc-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 active:scale-95"
+              title={isRtl ? 'تغيير سرعة الصوت' : 'Toggle audio playback speed'}
             >
               {playbackSpeed}x
             </button>
           </div>
         </div>
 
-        {/* 4. Footer: Verified Student & 5 Stars */}
-        <div className="flex items-center justify-between mt-3 px-1">
-          <div className="flex items-center gap-1 text-amber-400">
+        {/* 5. Footer: Verified Student & 5 Stars */}
+        <div className="flex items-center justify-between mt-4 px-1 pt-3 border-t border-slate-100/80 dark:border-zinc-800/50">
+          <div
+            className="flex items-center gap-1 text-amber-400"
+            aria-label="5 out of 5 stars"
+          >
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
+              <Star
+                key={i}
+                className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
+              />
             ))}
           </div>
 
-          <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-zinc-400 font-medium">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400 font-medium">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
             <span>{isRtl ? 'مراجعة موثقة' : 'Verified Review'}</span>
           </div>
         </div>

@@ -83,21 +83,43 @@ export function PricingCard({ onOpenCheckout }: PricingCardProps) {
           {/* Pricing Row */}
           <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/10 mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-baseline gap-3">
-                <span className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
-                  {pricingData.launchPrice}
-                </span>
-                {pricingData.period && (
-                  <span className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 font-medium">
-                    {pricingData.period}
+              <div className="flex flex-col">
+                {/* Top Row: Original Struck-Through Price + Mobile Discount Badge */}
+                <div className="flex flex-wrap items-center justify-between sm:justify-start gap-2.5 sm:gap-3 mb-1">
+                  {pricingData.originalPrice && (
+                    <span className="text-sm sm:text-base font-semibold text-slate-500 dark:text-zinc-400 line-through decoration-red-500/80 dark:decoration-red-400/90 decoration-[2px] tabular-nums whitespace-nowrap">
+                      {pricingData.originalPrice}
+                    </span>
+                  )}
+                  {/* Discount Badge on Mobile: aligned opposite to original price */}
+                  {pricingData.discountBadge && (
+                    <div className="sm:hidden">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs font-bold tracking-wide shadow-xs whitespace-nowrap">
+                        {pricingData.discountBadge}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Primary Hero Launch Price */}
+                <div className="flex items-baseline">
+                  <span className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white font-mono whitespace-nowrap">
+                    {pricingData.launchPrice}
                   </span>
+                </div>
+
+                {/* Lifetime / One-Time Period Explanatory Note */}
+                {pricingData.period && (
+                  <p className="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-zinc-400 font-medium leading-normal">
+                    {pricingData.period}
+                  </p>
                 )}
               </div>
 
-              {/* Eye-Catching Bold Red Discount Badge */}
+              {/* Eye-Catching Bold Red Discount Badge on Desktop / Tablet */}
               {pricingData.discountBadge && (
-                <div className="self-start sm:self-auto">
-                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs sm:text-sm font-bold tracking-wide shadow-xs">
+                <div className="hidden sm:block shrink-0">
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs sm:text-sm font-bold tracking-wide shadow-xs whitespace-nowrap">
                     {pricingData.discountBadge}
                   </span>
                 </div>

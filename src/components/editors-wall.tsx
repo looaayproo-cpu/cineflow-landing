@@ -136,18 +136,28 @@ export function EditorsWall() {
           className="mt-6 flex flex-wrap items-center justify-center sm:justify-between w-full max-w-3xl gap-3 p-2 sm:px-4 sm:py-2.5 rounded-2xl bg-white/70 dark:bg-[#121217]/80 border border-slate-200/80 dark:border-white/10 shadow-sm backdrop-blur-md"
         >
           {/* Audio Spec indicator */}
-          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-600 dark:text-zinc-300">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-zinc-300">
             <Headphones className="w-4 h-4 text-[#0EA5E9]" />
             <span>{wallCopy.voiceNoteBadge}</span>
           </div>
 
           {/* Navigation Controls (Prev / Next & Card Counter) */}
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono font-bold text-slate-500 dark:text-zinc-400">
-              {activeIndex + 1} / {testimonials.length}
+            <span
+              className={cn(
+                'text-xs font-bold text-slate-500 dark:text-zinc-400',
+                isRtl ? 'font-sans' : 'font-mono'
+              )}
+            >
+              <span className="lg:hidden tabular-nums" dir="ltr">
+                {activeIndex + 1} / {testimonials.length}
+              </span>
+              <span className="hidden lg:inline">
+                {testimonials.length} {isRtl ? 'تسجيلات حصرية' : 'Exclusive Notes'}
+              </span>
             </span>
 
-            <div className="flex items-center gap-1.5" dir="ltr">
+            <div className="flex items-center gap-1.5 lg:hidden" dir="ltr">
               {/* Previous Button */}
               <button
                 type="button"
@@ -155,7 +165,7 @@ export function EditorsWall() {
                 disabled={!canScrollStart && !isRtl}
                 aria-label={wallCopy.prevButton}
                 className={cn(
-                  'w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 shadow-xs',
+                  'w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                   'bg-white dark:bg-[#181820] border-slate-200 dark:border-zinc-700/80 text-slate-700 dark:text-zinc-200',
                   'hover:border-indigo-400 hover:text-[#4F46E5] dark:hover:border-indigo-500 dark:hover:text-[#818CF8] active:scale-95',
                   'disabled:opacity-40 disabled:pointer-events-none'
@@ -171,7 +181,7 @@ export function EditorsWall() {
                 disabled={!canScrollEnd && !isRtl}
                 aria-label={wallCopy.nextButton}
                 className={cn(
-                  'w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 shadow-xs',
+                  'w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                   'bg-white dark:bg-[#181820] border-slate-200 dark:border-zinc-700/80 text-slate-700 dark:text-zinc-200',
                   'hover:border-indigo-400 hover:text-[#4F46E5] dark:hover:border-indigo-500 dark:hover:text-[#818CF8] active:scale-95',
                   'disabled:opacity-40 disabled:pointer-events-none'
@@ -184,18 +194,28 @@ export function EditorsWall() {
         </motion.div>
       </div>
 
-      {/* Single-Row Interactive Horizontal Carousel */}
-      <div className="relative w-full">
-        {/* Left & Right Edge Gradient Fades for SaaS Polish */}
-        <div className="pointer-events-none absolute inset-y-0 start-0 w-8 sm:w-24 md:w-36 bg-gradient-to-r rtl:bg-gradient-to-l from-background to-transparent z-20" />
-        <div className="pointer-events-none absolute inset-y-0 end-0 w-8 sm:w-24 md:w-36 bg-gradient-to-l rtl:bg-gradient-to-r from-background to-transparent z-20" />
+      {/* Single-Row Interactive Horizontal Carousel on Mobile/Tablet -> 3-Column Grid on Desktop */}
+      <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6">
+        {/* Left & Right Edge Gradient Fades for SaaS Polish - Mobile/Tablet Only */}
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-y-0 start-0 w-8 sm:w-16 bg-gradient-to-r rtl:bg-gradient-to-l from-background to-transparent z-20 transition-opacity duration-300 lg:hidden',
+            canScrollStart ? 'opacity-100' : 'opacity-0'
+          )}
+        />
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-y-0 end-0 w-8 sm:w-16 bg-gradient-to-l rtl:bg-gradient-to-r from-background to-transparent z-20 transition-opacity duration-300 lg:hidden',
+            canScrollEnd ? 'opacity-100' : 'opacity-0'
+          )}
+        />
 
         {/* Scroll Container with Mandatory Snap & Mouse/Touch Dragging */}
         <div
           ref={scrollContainerRef}
           onScroll={checkScrollState}
           dir={direction}
-          className="flex gap-4 sm:gap-6 overflow-x-auto py-4 px-4 sm:px-12 md:px-20 snap-x snap-mandatory scroll-smooth no-scrollbar select-none"
+          className="flex lg:grid lg:grid-cols-3 gap-4 sm:gap-6 overflow-x-auto lg:overflow-visible py-4 px-2 sm:px-4 lg:px-0 snap-x snap-mandatory scroll-smooth no-scrollbar select-none items-stretch"
           style={{
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
@@ -211,8 +231,8 @@ export function EditorsWall() {
           ))}
         </div>
 
-        {/* Carousel Progress Indicator Dots */}
-        <div className="flex items-center justify-center gap-1.5 mt-4">
+        {/* Carousel Progress Indicator Dots - Mobile/Tablet only */}
+        <div className="flex items-center justify-center gap-1.5 mt-4 lg:hidden">
           {testimonials.map((_, idx) => (
             <button
               key={idx}
@@ -220,7 +240,7 @@ export function EditorsWall() {
               onClick={() => {
                 const el = scrollContainerRef.current;
                 if (!el) return;
-                const cardWidth = 380;
+                const cardWidth = 340;
                 const targetScroll = idx * cardWidth;
                 el.scrollTo({
                   left: isRtl ? -targetScroll : targetScroll,
